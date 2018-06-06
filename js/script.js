@@ -1,24 +1,27 @@
 let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera(120, window.innerWidth / window.innerHeight, 0.1, 1000);
+let camera = new THREE.PerspectiveCamera(140, window.innerWidth / window.innerHeight, 0.1, 1000);
 // var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, near, far );
 
-let renderer = new THREE.WebGLRenderer();
+let renderer = new THREE.WebGLRenderer({antialiasing: true});
 let cubes = new THREE.Object3D();
 let raycaster = new THREE.Raycaster();
 let mouse = new THREE.Vector2();
 let flag = false;
 let intersects;
+let light = new THREE.PointLight( 0xff0000, 1, 100 );
 
 
 for (let i = 0; i <= 10; i++) {
-  let geometry = new THREE.BoxGeometry(0.6, 3, 0.01);
-  let material = new THREE.MeshBasicMaterial({ color: 0x00fff0, wireframe: true });
+  let geometry = new THREE.BoxGeometry(0.6, 3, 0.02);
+  let material = new THREE.MeshLambertMaterial();
   let cube = new THREE.Mesh(geometry, material);
   cube.position.x = -6 + i * 1.1;
   cubes.add(cube);
 }
 
 scene.add(cubes);
+light.position.set( 0, 0, 5 );
+scene.add(light);
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
@@ -51,7 +54,7 @@ function render() {
   if (flag) {
     cubes.children.forEach(cube => {
       if (cube.rotation.y <= Math.PI) {
-        cube.rotation.y += 0.04;
+        cube.rotation.y += 0.05;
       }
       if (cube.rotation.y >= Math.PI) {
         flag = false;
