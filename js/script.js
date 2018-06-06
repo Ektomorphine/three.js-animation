@@ -1,5 +1,5 @@
 let scene = new THREE.Scene();
-let camera = new THREE.PerspectiveCamera(100, window.innerWidth / window.innerHeight, 0.1, 1000);
+let camera = new THREE.PerspectiveCamera(120, window.innerWidth / window.innerHeight, 0.1, 1000);
 // var camera = new THREE.OrthographicCamera( width / - 2, width / 2, height / 2, height / - 2, near, far );
 
 let renderer = new THREE.WebGLRenderer();
@@ -10,11 +10,11 @@ let flag = false;
 let intersects;
 
 
-for (let i = 0; i < 10; i++) {
-  let geometry = new THREE.BoxGeometry(1, 2, 0.1);
+for (let i = 0; i <= 10; i++) {
+  let geometry = new THREE.BoxGeometry(0.6, 3, 0.01);
   let material = new THREE.MeshBasicMaterial({ color: 0x00fff0, wireframe: true });
   let cube = new THREE.Mesh(geometry, material);
-  cube.position.x = -14 + i * 2;
+  cube.position.x = -6 + i * 1.1;
   cubes.add(cube);
 }
 
@@ -23,7 +23,7 @@ scene.add(cubes);
 renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
-camera.position.z = 5;
+camera.position.z = 3;
 camera.position.x = 0;
 mouse.x = -window.innerWidth / 2;
 mouse.y = window.innerHeight / 2;
@@ -42,20 +42,23 @@ function onMouseMove(event) {
 }
 
 function render() {
-  let object;
   raycaster.setFromCamera(mouse, camera);
   intersects = raycaster.intersectObjects(cubes.children);
   if (intersects[0]) {
     flag = true;
   }
-  if (flag && intersects[0].object.rotation.y <= Math.PI) {
-    intersects[0].object.rotation.y += 0.01;
-  } else {
-    return;
+
+  if (flag) {
+    cubes.children.forEach(cube => {
+      if (cube.rotation.y <= Math.PI) {
+        cube.rotation.y += 0.04;
+      }
+      if (cube.rotation.y >= Math.PI) {
+        flag = false;
+      }
+    })
+
   }
-
-
-
   renderer.render(scene, camera);
 }
 
